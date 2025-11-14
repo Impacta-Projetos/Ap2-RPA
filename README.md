@@ -35,7 +35,6 @@ Este projeto foi desenvolvido como parte da disciplina de **Robotic Process Auto
 - ✅ **Validação de Duplicatas**: Impede inserção de países já cadastrados
 - ✅ **Filtro Inteligente**: Seleciona o país correto quando há múltiplos resultados
 - ✅ **Feedback Visual**: Mensagens coloridas informando status das operações
-- ✅ **Visualização em Tabela**: Script auxiliar para consultar dados formatados
 
 ---
 
@@ -50,8 +49,8 @@ Este projeto foi desenvolvido como parte da disciplina de **Robotic Process Auto
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/Felipewv93/Portfolio.git
-cd AP2-RPA
+git clone https://github.com/Impacta-Projetos/Ap2-RPA.git
+cd Ap2-RPA
 ```
 
 2. **Instale as dependências**
@@ -86,32 +85,6 @@ Digite o nome do 3º país: japão
 ✓ País 'japão' inserido com sucesso!
 ```
 
-### Visualizar Dados Cadastrados
-
-```bash
-python ver_tabela.py
-```
-
-**Saída:**
-
-```
-================================================================================
-                           TABELA PAISES
-================================================================================
-
-+----+--------------+-------------------------------+-----------+---------------+
-| id | nome_comum   | nome_oficial                  | capital   | continente    |
-+====+==============+===============================+===========+===============+
-|  1 | Brazil       | Federative Republic of Brazil | Brasília  | South America |
-+----+--------------+-------------------------------+-----------+---------------+
-|  2 | China        | People's Republic of China    | Beijing   | Asia          |
-+----+--------------+-------------------------------+-----------+---------------+
-|  3 | Japan        | Japan                         | Tokyo     | Asia          |
-+----+--------------+-------------------------------+-----------+---------------+
-
-Total de países: 3
-```
-
 ---
 
 ## 📁 Estrutura do Projeto
@@ -138,7 +111,7 @@ AP2-RPA/
 │   └── 💾 paises.db          # Banco de dados SQLite (gerado automaticamente)
 │
 └── 📂 docs/
-    └── 📄 RELATORIO.md       # Relatório técnico completo
+    └── 📄 RELATORIO.pdf       # Relatório técnico completo
 ```
 
 ---
@@ -177,8 +150,7 @@ AP2-RPA/
 ### Bibliotecas
 
 - **[Requests](https://requests.readthedocs.io/)** - Requisições HTTP
-- **[Tabulate](https://pypi.org/project/tabulate/)** - Formatação de tabelas
-
+  
 ---
 
 ## 🎯 Funcionalidades Técnicas
@@ -320,26 +292,13 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ---
 
-## 👤 Autor
+## 👤 Autores
 
-**Felipe**
-
-- GitHub: [@Felipewv93](https://github.com/Felipewv93)
-- Projeto: [Portfolio](https://github.com/Felipewv93/Portfolio)
-
----
-
-## 🙏 Agradecimentos
-
-- [REST Countries API](https://restcountries.com/) - Pelos dados públicos e gratuitos
-- Comunidade Python - Pelas excelentes bibliotecas
-- Professores e colegas da disciplina de RPA
+**Felipe Viana** e **Ryan Rodrigues**
 
 ---
 
 <div align="center">
-
-**Desenvolvido com ❤️ para a disciplina de RPA**
 
 ⭐ Se este projeto foi útil, considere dar uma estrela!
 
