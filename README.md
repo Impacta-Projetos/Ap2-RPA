@@ -30,12 +30,12 @@ Este projeto foi desenvolvido como parte da disciplina de **Robotic Process Auto
 ## ✨ Funcionalidades
 
 - ✅ **Consulta Automatizada**: Busca dados de 3 países por execução
-- ✅ **API REST Countries**: Integração com API pública de dados geográficos
+- ✅ **API REST Countries**: Integração com API pública usando endpoints `/translation` e `/name`
+- ✅ **Suporte Multilíngue**: Aceita nomes de países em português (com acento) e inglês
 - ✅ **Banco de Dados Local**: Armazenamento em SQLite na pasta `data/`
 - ✅ **Validação de Duplicatas**: Impede inserção de países já cadastrados
-- ✅ **Filtro Inteligente**: Seleciona o país correto quando há múltiplos resultados
-- ✅ **Feedback Visual**: Mensagens coloridas informando status das operações
-- ✅ **Visualização em Tabela**: Script auxiliar para consultar dados formatados
+- ✅ **Filtro por Correspondência Exata**: Seleciona automaticamente o país correto em casos de múltiplos resultados
+- ✅ **Feedback Visual**: Mensagens informando status das operações em tempo real
 
 ---
 
@@ -50,8 +50,8 @@ Este projeto foi desenvolvido como parte da disciplina de **Robotic Process Auto
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/Felipewv93/Portfolio.git
-cd AP2-RPA
+git clone https://github.com/Impacta-Projetos/Ap2-RPA.git
+cd Ap2-RPA
 ```
 
 2. **Instale as dependências**
@@ -86,32 +86,6 @@ Digite o nome do 3º país: japão
 ✓ País 'japão' inserido com sucesso!
 ```
 
-### Visualizar Dados Cadastrados
-
-```bash
-python ver_tabela.py
-```
-
-**Saída:**
-
-```
-================================================================================
-                           TABELA PAISES
-================================================================================
-
-+----+--------------+-------------------------------+-----------+---------------+
-| id | nome_comum   | nome_oficial                  | capital   | continente    |
-+====+==============+===============================+===========+===============+
-|  1 | Brazil       | Federative Republic of Brazil | Brasília  | South America |
-+----+--------------+-------------------------------+-----------+---------------+
-|  2 | China        | People's Republic of China    | Beijing   | Asia          |
-+----+--------------+-------------------------------+-----------+---------------+
-|  3 | Japan        | Japan                         | Tokyo     | Asia          |
-+----+--------------+-------------------------------+-----------+---------------+
-
-Total de países: 3
-```
-
 ---
 
 ## 📁 Estrutura do Projeto
@@ -138,7 +112,7 @@ AP2-RPA/
 │   └── 💾 paises.db          # Banco de dados SQLite (gerado automaticamente)
 │
 └── 📂 docs/
-    └── 📄 RELATORIO.md       # Relatório técnico completo
+    └── 📄 RELATORIO.pdf       # Relatório técnico completo
 ```
 
 ---
@@ -177,24 +151,75 @@ AP2-RPA/
 ### Bibliotecas
 
 - **[Requests](https://requests.readthedocs.io/)** - Requisições HTTP
-- **[Tabulate](https://pypi.org/project/tabulate/)** - Formatação de tabelas
 
+---
+
+## 🌐 Como Funciona a Busca
+
+### Nomes Aceitos
+
+O sistema aceita nomes de países em:
+
+- ✅ **Português com acento**: França, México, Japão, Suíça
+- ✅ **Inglês**: France, Mexico, Japan, Switzerland  
+- ✅ **Nomes compostos**: Estados Unidos, Reino Unido, África do Sul
+
+### Exemplos de Busca
+
+| Nome Digitado | País Retornado | Status |
+|---------------|----------------|--------|
+| `china` | China (People's Republic of China) | ✅ |
+| `frança` | France (French Republic) | ✅ |
+| `estados unidos` | United States | ✅ |
+| `japão` | Japan | ✅ |
+| `mexico` | Mexico | ✅ |
+| `alemanha` | Germany | ✅ |
+
+### Limitações
+
+- ❌ Apelidos não oficiais (ex: "EUA", "Inglaterra") não são reconhecidos pela API
+- ❌ Nomes sem acento em português (ex: "franca", "japao") podem não funcionar
+- ✅ **Recomendação**: Digite o nome completo com acentuação correta
+  
 ---
 
 ## 🎯 Funcionalidades Técnicas
 
-### Filtro Inteligente de Países
+### Busca Inteligente com Dois Endpoints
 
-O sistema implementa um algoritmo que:
+O sistema utiliza dois endpoints da API REST Countries para máxima compatibilidade:
 
-1. Busca correspondência exata com o nome digitado
-2. Prioriza países cujo nome começa com o termo buscado
-3. Evita resultados incorretos (ex: Taiwan ao buscar "china")
+1. **`/translation/{pais}`** - Busca por nomes traduzidos (aceita português)
+   - Permite buscar "França", "México", "Japão" diretamente
+   - Retorna países que contêm o termo buscado em suas traduções
+
+2. **`/name/{pais}`** - Fallback para nomes em inglês
+   - Usado quando o endpoint de tradução falha
+   - Garante compatibilidade com nomes em inglês
+
+```python
+# Busca primeiro por tradução, depois por nome em inglês
+url_translation = f"https://restcountries.com/v3.1/translation/{pais}"
+# Se falhar, tenta: 
+url_name = f"https://restcountries.com/v3.1/name/{pais}"
+```
+
+### Filtro por Correspondência Exata
+
+Quando a API retorna múltiplos países (ex: "China" e "Taiwan" para busca "china"), o sistema:
+
+1. Compara o termo pesquisado com:
+   - Nome comum em inglês
+   - Nome oficial
+   - Tradução em português
+2. Se encontrar **correspondência exata**, usa esse país
+3. Caso contrário, usa o primeiro resultado
 
 ```python
 # Exemplo: Busca por "china"
-# ✅ Retorna: People's Republic of China
-# ❌ Não retorna: Taiwan (Republic of China)
+# Verifica: nome_pt.lower() == "china" 
+# ✅ Retorna: China (People's Republic of China)
+# ❌ Ignora: Taiwan (Republic of China)
 ```
 
 ### Validação de Duplicatas
@@ -238,22 +263,24 @@ Para cada país, são extraídos **13 campos** da API:
 
 ```bash
 $ python main.py
-Digite o nome do 1º país: brasil
-Digite o nome do 2º país: frança
-Digite o nome do 3º país: canadá
+Digite o nome completo do 1º país que deseja buscar: frança
+Digite o nome completo do 2º país que deseja buscar: estados unidos
+Digite o nome completo do 3º país que deseja buscar: japão
 
-✓ País 'brasil' inserido com sucesso!
 ✓ País 'frança' inserido com sucesso!
-✓ País 'canadá' inserido com sucesso!
+✓ País 'estados unidos' inserido com sucesso!
+✓ País 'japão' inserido com sucesso!
 ```
+
+**Observação**: O sistema aceita nomes em português (com ou sem acento) e inglês.
 
 ### Caso 2: Tentativa de Duplicata
 
 ```bash
 $ python main.py
-Digite o nome do 1º país: brasil
-Digite o nome do 2º país: alemanha
-Digite o nome do 3º país: méxico
+Digite o nome completo do 1º país que deseja buscar: brasil
+Digite o nome completo do 2º país que deseja buscar: alemanha
+Digite o nome completo do 3º país que deseja buscar: méxico
 
 ⚠ País 'brasil' já existe no banco de dados!
 ✓ País 'alemanha' inserido com sucesso!
@@ -264,9 +291,9 @@ Digite o nome do 3º país: méxico
 
 ```bash
 $ python main.py
-Digite o nome do 1º país: xyzabc
-Digite o nome do 2º país: portugal
-Digite o nome do 3º país: espanha
+Digite o nome completo do 1º país que deseja buscar: xyzabc
+Digite o nome completo do 2º país que deseja buscar: portugal
+Digite o nome completo do 3º país que deseja buscar: espanha
 
 ✗ Não foi possível obter dados para 'xyzabc'
 ✓ País 'portugal' inserido com sucesso!
@@ -286,7 +313,7 @@ def obter_paises():
     paises = []
     cont = 1
     while cont <= 5:  # Altere de 3 para 5
-        pais = input(f'Digite o nome do {cont}º país: ').lower()
+        pais = input(f'Digite o nome completo do {cont}º país que deseja buscar: ').lower()
         paises.append(pais)
         cont += 1
     return paises
@@ -320,26 +347,13 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ---
 
-## 👤 Autor
+## 👤 Autores
 
-**Felipe**
-
-- GitHub: [@Felipewv93](https://github.com/Felipewv93)
-- Projeto: [Portfolio](https://github.com/Felipewv93/Portfolio)
-
----
-
-## 🙏 Agradecimentos
-
-- [REST Countries API](https://restcountries.com/) - Pelos dados públicos e gratuitos
-- Comunidade Python - Pelas excelentes bibliotecas
-- Professores e colegas da disciplina de RPA
+**Felipe Viana** e **Ryan Rodrigues**
 
 ---
 
 <div align="center">
-
-**Desenvolvido com ❤️ para a disciplina de RPA**
 
 ⭐ Se este projeto foi útil, considere dar uma estrela!
 
