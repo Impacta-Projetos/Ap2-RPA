@@ -88,32 +88,11 @@ Digite o nome do 3º país: japão
 
 ---
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
-```
-AP2-RPA/
-│
-├── 📄 main.py                 # Ponto de entrada do programa
-├── 📄 requirements.txt        # Dependências do projeto
-│
-├── 📂 api/
-│   └── 📄 api.py             # Consumo da API REST Countries
-│
-├── 📂 core/
-│   ├── 📄 input.py           # Coleta de dados do usuário
-│   ├── 📄 filter.py          # Filtragem e processamento de dados
-│   └── 📄 insert.py          # Inserção no banco de dados
-│
-├── 📂 models/
-│   ├── 📄 __init__.py        # Conexão com banco de dados
-│   └── 📄 paises.py          # Modelo da tabela de países
-│
-├── 📂 data/
-│   └── 💾 paises.db          # Banco de dados SQLite (gerado automaticamente)
-│
-└── 📂 docs/
-    └── 📄 RELATORIO.pdf       # Relatório técnico completo
-```
+![Estrutura do Projeto](images/estrutura_projeto.png)
+
+O projeto segue uma arquitetura modular organizada em camadas funcionais distintas, facilitando manutenção e evolução do sistema.
 
 ---
 
@@ -317,7 +296,7 @@ O sistema inicia com o código principal (`main.py`) executando os imports neces
 O banco de dados SQLite é criado automaticamente na pasta `data/` e a conexão é estabelecida para preparar o ambiente de armazenamento.
 
 ### P3 - Estrutura da Tabela Países
-![Tabela SQLite](images/tabela_sqlite.jpg)
+![Tabela Países DB](images/tabela_paises_db.jpg)
 
 A tabela `paises` é criada no banco com todos os campos necessários para armazenar as informações completas de cada país.
 
@@ -358,14 +337,15 @@ O sistema implementa um algoritmo que percorre todos os países retornados e ver
 ### P10-P11 - País Correto Identificado
 Quando encontra correspondência exata no loop, a variável `pais_info` recebe os dados do país correto. O algoritmo interrompe o loop (`break`) e processa apenas esse país específico. Os dados são organizados no dicionário `pais_data`.
 
-### P12 - Função insert_pais(): Validação e Inserção
+### P12 - Função insert_pais(): Validação e Inserção no Banco
 ![Insert Países](images/insert_paises.jpg)
 
-Na função `insert_pais()`:
-- Recebe parâmetros `pais_data` (dados obtidos) e `pais` (nome buscado)
-- Executa SELECT para verificar se o país já existe na tabela
-- Se já existe: exibe mensagem e retorna False
-- Se não existe: executa INSERT com os dados e retorna True
+A função `insert_pais()` recebe dois parâmetros: `pais_data` (dicionário com dados extraídos) e `nome_buscado` (string original digitada pelo usuário). Primeiro executa:
+```sql
+SELECT id FROM paises WHERE nome_comum = ?
+```
+Se o país já existe: exibe "⚠ País já existe!" e retorna `False`  
+Se não existe: executa `INSERT` com os 13 campos e retorna `True`
 
 ### P13 - Output Final: Países Inseridos
 ![Países Inseridos](images/paises_inseridos.jpg)
@@ -373,7 +353,7 @@ Na função `insert_pais()`:
 Mensagens de confirmação após todos os países serem processados e inseridos no banco de dados.
 
 ### P14-P15 - Resultado Final: Tabela Populada
-![Tabela Países DB](images/tabela_paises_db.jpg)
+![Tabela SQLite](images/tabela_sqlite.jpg)
 
 Visualização final da tabela `paises` no banco de dados com os 3 países buscados e todos os dados solicitados devidamente preenchidos.
 
