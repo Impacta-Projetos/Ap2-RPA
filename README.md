@@ -381,7 +381,7 @@ Visualização final da tabela `paises` no banco de dados com os 3 países busca
 
 ## 🔄 Fluxo de Execução Resumido
 
-```mermaid
+```
 graph TD
     A[Início - main.py] --> B[Criar/Conectar BD]
     B --> C[Criar Tabela países]
