@@ -1,0 +1,8 @@
+pycache/
+.vscode/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+AP2_RPA.pdf
+RELATORIO.md
