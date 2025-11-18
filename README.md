@@ -52,6 +52,8 @@ Este projeto foi desenvolvido como parte da disciplina de **Robotic Process Auto
 ```bash
 git clone https://github.com/Impacta-Projetos/Ap2-RPA.git
 cd Ap2-RPA
+git clone https://github.com/Impacta-Projetos/Ap2-RPA.git
+cd Ap2-RPA
 ```
 
 2. **Instale as dependências**
@@ -112,6 +114,7 @@ AP2-RPA/
 │   └── 💾 paises.db          # Banco de dados SQLite (gerado automaticamente)
 │
 └── 📂 docs/
+    └── 📄 RELATORIO.pdf       # Relatório técnico completo
     └── 📄 RELATORIO.pdf       # Relatório técnico completo
 ```
 
@@ -348,7 +351,9 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ---
 
 ## 👤 Autores
+## 👤 Autores
 
+**Felipe Viana** e **Ryan Rodrigues**
 **Felipe Viana** e **Ryan Rodrigues**
 
 ---
