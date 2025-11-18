@@ -361,7 +361,7 @@ Visualização final da tabela `paises` no banco de dados com os 3 países busca
 
 ## 🔄 Fluxo de Execução Resumido
 
-```mermaid
+```
 graph TD
     A[Início - main.py] --> B[Criar/Conectar BD]
     B --> C[Criar Tabela países]
@@ -406,7 +406,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👤 Autores
 
-**Felipe Viana** e **Ryan Rodrigues**
+**Felipe Viana** e **Ryan Rodrigues Cordeiro**
 
 ---
 
