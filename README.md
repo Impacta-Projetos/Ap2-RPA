@@ -242,12 +242,12 @@ Para cada país, são extraídos **13 campos** da API:
 
 ```bash
 $ python main.py
-Digite o nome completo do 1º país que deseja buscar: frança
-Digite o nome completo do 2º país que deseja buscar: estados unidos
-Digite o nome completo do 3º país que deseja buscar: japão
+Digite o nome completo do 1º país que deseja buscar: Brasil
+Digite o nome completo do 2º país que deseja buscar: China
+Digite o nome completo do 3º país que deseja buscar: Japão
 
-✓ País 'frança' inserido com sucesso!
-✓ País 'estados unidos' inserido com sucesso!
+✓ País 'brasil' inserido com sucesso!
+✓ País 'china' inserido com sucesso!
 ✓ País 'japão' inserido com sucesso!
 ```
 
@@ -257,9 +257,9 @@ Digite o nome completo do 3º país que deseja buscar: japão
 
 ```bash
 $ python main.py
-Digite o nome completo do 1º país que deseja buscar: brasil
-Digite o nome completo do 2º país que deseja buscar: alemanha
-Digite o nome completo do 3º país que deseja buscar: méxico
+Digite o nome completo do 1º país que deseja buscar: Brasil
+Digite o nome completo do 2º país que deseja buscar: Alemanha
+Digite o nome completo do 3º país que deseja buscar: México
 
 ⚠ País 'brasil' já existe no banco de dados!
 ✓ País 'alemanha' inserido com sucesso!
@@ -271,8 +271,8 @@ Digite o nome completo do 3º país que deseja buscar: méxico
 ```bash
 $ python main.py
 Digite o nome completo do 1º país que deseja buscar: xyzabc
-Digite o nome completo do 2º país que deseja buscar: portugal
-Digite o nome completo do 3º país que deseja buscar: espanha
+Digite o nome completo do 2º país que deseja buscar: Portugal
+Digite o nome completo do 3º país que deseja buscar: Espanha
 
 ✗ Não foi possível obter dados para 'xyzabc'
 ✓ País 'portugal' inserido com sucesso!
