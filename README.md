@@ -52,8 +52,6 @@ Este projeto foi desenvolvido como parte da disciplina de **Robotic Process Auto
 ```bash
 git clone https://github.com/Impacta-Projetos/Ap2-RPA.git
 cd Ap2-RPA
-git clone https://github.com/Impacta-Projetos/Ap2-RPA.git
-cd Ap2-RPA
 ```
 
 2. **Instale as dependências**
@@ -90,33 +88,11 @@ Digite o nome do 3º país: japão
 
 ---
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
-```
-AP2-RPA/
-│
-├── 📄 main.py                 # Ponto de entrada do programa
-├── 📄 requirements.txt        # Dependências do projeto
-│
-├── 📂 api/
-│   └── 📄 api.py             # Consumo da API REST Countries
-│
-├── 📂 core/
-│   ├── 📄 input.py           # Coleta de dados do usuário
-│   ├── 📄 filter.py          # Filtragem e processamento de dados
-│   └── 📄 insert.py          # Inserção no banco de dados
-│
-├── 📂 models/
-│   ├── 📄 __init__.py        # Conexão com banco de dados
-│   └── 📄 paises.py          # Modelo da tabela de países
-│
-├── 📂 data/
-│   └── 💾 paises.db          # Banco de dados SQLite (gerado automaticamente)
-│
-└── 📂 docs/
-    └── 📄 RELATORIO.pdf       # Relatório técnico completo
-    └── 📄 RELATORIO.pdf       # Relatório técnico completo
-```
+![Estrutura do Projeto](images/estrutura_projeto.png)
+
+O projeto segue uma arquitetura modular organizada em camadas funcionais distintas, facilitando manutenção e evolução do sistema.
 
 ---
 
@@ -305,32 +281,110 @@ Digite o nome completo do 3º país que deseja buscar: espanha
 
 ---
 
-## 🔧 Configuração
+## 🎬 Pipeline Visual do Sistema
 
-### Modificar Quantidade de Países
+Esta seção apresenta o fluxo completo de execução do sistema através de imagens que demonstram cada etapa do processo.
 
-Edite `core/input.py`:
+### P1 - Código Principal e Imports
+![Código Core](images/codigo_core.jpg)
 
-```python
-def obter_paises():
-    paises = []
-    cont = 1
-    while cont <= 5:  # Altere de 3 para 5
-        pais = input(f'Digite o nome completo do {cont}º país que deseja buscar: ').lower()
-        paises.append(pais)
-        cont += 1
-    return paises
+O sistema inicia com o código principal (`main.py`) executando os imports necessários dos módulos `paises` e dos arquivos do `core` (input, filter, insert).
+
+### P2 - Criação e Conexão com o Banco de Dados
+![Criar Banco de Dados](images/criar_banco_dados.jpg)
+
+O banco de dados SQLite é criado automaticamente na pasta `data/` e a conexão é estabelecida para preparar o ambiente de armazenamento.
+
+### P3 - Estrutura da Tabela Países
+![Tabela Países DB](images/tabela_paises_db.jpg)
+
+A tabela `paises` é criada no banco com todos os campos necessários para armazenar as informações completas de cada país.
+
+### P4 - Função obter_paises(): Coleta de Input do Usuário
+![Obter Países DB](images/obter_paises_db.jpg)
+
+A função `obter_paises()` executa um loop (cont de 1 a 3) solicitando ao usuário o nome dos países desejados através de `input()`, armazenando cada entrada em uma lista e retornando essa lista.
+
+### P5 - Lista de Países Coletados
+![Output Países](images/output_paises.jpg)
+
+Resultado da função `obter_paises()` mostrando os 3 países que foram inseridos pelo usuário, armazenados na variável `paises_lista`.
+
+### P6 - Função filtrar_dados()
+![Filtrar Dados](images/filtrar_dados.jpg)
+
+Para cada item da lista de países, é chamada a função `filtrar_dados()`, que por sua vez chama a função `buscar_pais()` para processar as informações.
+
+### P7 - Função buscar_pais(): Requisição à API
+![Buscar País](images/buscar_pais.jpg)
+
+A função `buscar_pais()` faz uma requisição HTTP para a API REST Countries:
+- Primeiro tenta o endpoint `/translation` para buscar o nome em português
+- Se status 200: retorna os países encontrados
+- Caso contrário: tenta o endpoint `/name` para buscar pelo nome em inglês
+
+### P8 - Resposta JSON da API (Primeiro Resultado)
+![JSON Países](images/json_paises.jpg)
+
+Quando a API retorna múltiplos países para uma busca (como "França"), o primeiro resultado pode não ser o país desejado. Aqui vemos um exemplo de JSON retornado pela API REST Countries, que será processado pela função `filtrar_dados()`.
+
+### P9 - Algoritmo de Filtragem e Correspondência
+O sistema implementa um algoritmo que percorre todos os países retornados e verifica correspondência exata entre:
+- Nome buscado vs. `name.common` (nome comum em inglês)  
+- Nome buscado vs. `name.official` (nome oficial)
+- Nome buscado vs. `translations.por.common` (nome em português, se disponível)
+
+### P10-P11 - País Correto Identificado
+Quando encontra correspondência exata no loop, a variável `pais_info` recebe os dados do país correto. O algoritmo interrompe o loop (`break`) e processa apenas esse país específico. Os dados são organizados no dicionário `pais_data`.
+
+### P12 - Função insert_pais(): Validação e Inserção no Banco
+![Insert Países](images/insert_paises.jpg)
+
+A função `insert_pais()` recebe dois parâmetros: `pais_data` (dicionário com dados extraídos) e `nome_buscado` (string original digitada pelo usuário). Primeiro executa:
+```sql
+SELECT id FROM paises WHERE nome_comum = ?
 ```
+Se o país já existe: exibe "⚠ País já existe!" e retorna `False`  
+Se não existe: executa `INSERT` com os 13 campos e retorna `True`
 
-### Alterar Localização do Banco
+### P13 - Output Final: Países Inseridos
+![Países Inseridos](images/paises_inseridos.jpg)
 
-Edite `models/__init__.py`:
+Mensagens de confirmação após todos os países serem processados e inseridos no banco de dados.
 
-```python
-db = sqlite3.connect('meu_banco/paises.db')  # Novo caminho
+### P14-P15 - Resultado Final: Tabela Populada
+![Tabela SQLite](images/tabela_sqlite.jpg)
+
+Visualização final da tabela `paises` no banco de dados com os 3 países buscados e todos os dados solicitados devidamente preenchidos.
+
+---
+
+## 🔄 Fluxo de Execução Resumido
+
+```
+graph TD
+    A[Início - main.py] --> B[Criar/Conectar BD]
+    B --> C[Criar Tabela países]
+    C --> D[obter_paises()]
+    D --> E[Lista de 3 países]
+    E --> F[Para cada país: filtrar_dados()]
+    F --> G[buscar_pais() - API Request]
+    G --> H{Status 200?}
+    H -->|Sim| I[Processar JSON]
+    H -->|Não| J[Tentar endpoint /name]
+    I --> K[Filtrar país correto]
+    K --> L[insert_pais()]
+    L --> M{Já existe?}
+    M -->|Sim| N[Exibir: Já existe]
+    M -->|Não| O[INSERT no BD]
+    O --> P[Próximo país]
+    P --> Q[Fechar conexão]
+    Q --> R[Fim]
 ```
 
 ---
+
+## 🔧 Configuração
 
 ## 🤝 Contribuindo
 
@@ -351,10 +405,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ---
 
 ## 👤 Autores
-## 👤 Autores
 
-**Felipe Viana** e **Ryan Rodrigues**
-**Felipe Viana** e **Ryan Rodrigues**
+**Felipe Viana** e **Ryan Rodrigues Cordeiro**
 
 ---
 
